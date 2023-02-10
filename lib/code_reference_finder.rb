@@ -93,7 +93,7 @@ class CodeReferenceFinder
             File.open(path) do |f|
                 f.each_line do |line|
                     i += 1
-                    next if is_comment?(line.strip!)
+                    next if is_comment?(line.strip)
 
                     if refined_target.any? {|s| line.include? s} and not is_ignorable?(line)
                         line_matches << "#{i}: #{line}"
