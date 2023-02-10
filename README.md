@@ -9,7 +9,7 @@ gem install code_reference_finder
 ```
 
 # example usage
-```
+```ruby
 require 'code_reference_finder'
 
 # Search a directory for .java files containing [abc, = abc.] and ignore imports.
