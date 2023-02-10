@@ -19,7 +19,6 @@ ref_finder = CodeReferenceFinder.new(
     target: ['abc', '= abc.'],
     ignore: ['import com.', 'import org.']
 )
-json = ref_finder.get_json
 
-puts json
+puts ref_finder.get_json
 ```

@@ -1,3 +1,2 @@
-code_reference_finder-0.0.0.gem
-code_reference_finder.gemspec
-code_reference_finder-0.0.1.gem
+*.gemspec
+*.gem
