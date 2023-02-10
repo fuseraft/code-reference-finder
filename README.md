@@ -1,6 +1,13 @@
 # code-reference-finder
 A source code analyzer to find targets and their references in very large solutions.
 
+You can find the gem here: [https://rubygems.org/gems/code_reference_finder](https://rubygems.org/gems/code_reference_finder)
+
+# installation
+```
+gem install code_reference_finder
+```
+
 # example usage
 ```
 require 'code_reference_finder'
