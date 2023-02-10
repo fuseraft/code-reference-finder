@@ -108,14 +108,17 @@ class CodeReferenceFinder
                 end
             end
         
-            file_matches[name] = { 
-                :path => path, 
-                :line_count => i, 
-                :ref_count => ref_searches.size, 
-                :match_count => line_matches.size, 
-                :refs => ref_searches, 
-                :matches => line_matches 
-            }
+            # if there were matches, add them.
+            if line_matches.size > 0
+                file_matches[name] = { 
+                    :path => path, 
+                    :line_count => i, 
+                    :ref_count => ref_searches.size, 
+                    :match_count => line_matches.size, 
+                    :refs => ref_searches, 
+                    :matches => line_matches 
+                }
+            end
         end
 
         end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
