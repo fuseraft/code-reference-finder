@@ -1,7 +1,7 @@
 # This is a source code analyzer for finding files containing specific references.
 
 class CodeReferenceFinder
-    def initialize(dir:, ext:, target:, ignore:)
+    def initialize(dir: nil, ext: nil, target: nil, ignore: nil)
         @dir = dir
         @ext = ext
         @target = target
@@ -10,16 +10,42 @@ class CodeReferenceFinder
         @interesting_paths = nil
     end
 
-    # Performs a parse and returns JSON results.
-    def get_json
+    # Performs a parse and returns
+    def get_refs(dir:, ext:, target:, ignore:)
+        @dir = dir
+        @ext = ext
+        @target = target
+        @ignore = ignore
+        @results = nil
+        @interesting_paths = nil
+
+        get_result
+    end
+
+    # Performs a parse and returns result hash.
+    def get_result
         @interesting_paths = find_interesting_paths()
-        json = parse_interesting_paths(@interesting_paths)
-        json
+        parse_interesting_paths(@interesting_paths)
+    end
+
+    # Returns the result hash as pretty JSON.
+    def get_pretty_json
+        JSON.pretty_generate(@results)
+    end
+
+    # Returns the result hash as raw JSON.
+    def get_json
+        JSON.generate(@results)
     end
 
     # Returns the result hash, nil if unparsed.
     def get_results
         @results
+    end
+
+    # Returns true if the result hash exists.
+    def has_results?
+        not @results.nil?
     end
 
     # Returns the interesting paths array, nil if unparsed.
@@ -79,6 +105,7 @@ class CodeReferenceFinder
 
         start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
+        paths_with_matches = []
         file_matches = {}
         refined_target = @target.map {|s| s.split(' ').last}
 
@@ -110,8 +137,10 @@ class CodeReferenceFinder
         
             # if there were matches, add them.
             if line_matches.size > 0
+                path_without_root = path.sub(@dir, '')
+                paths_with_matches << path_without_root
                 file_matches[name] = { 
-                    :path => path, 
+                    :path => path_without_root, 
                     :line_count => i, 
                     :ref_count => ref_searches.size, 
                     :match_count => line_matches.size, 
@@ -125,15 +154,21 @@ class CodeReferenceFinder
         
         # Define our results hash and return it as a JSON string.
         @results = { 
-            :params => {
-                :dir => @dir,
-                :ext => @ext,
-                :target => @target,
-                :ignore => @ignore
+            :metadata => {
+                :params => {
+                    :dir => @dir,
+                    :ext => @ext,
+                    :target => @target,
+                    :ignore => @ignore
+                },
+                :duration => "#{end_time - start_time} seconds",
+                :paths_with_matches => {
+                    :total => paths_with_matches.size,
+                    :paths => paths_with_matches
+                }
             },
-            :duration => "#{end_time - start_time} seconds",
-            :file_matches => file_matches 
+            :matches => file_matches 
         }
-        JSON.pretty_generate(@results)
+        @results
     end
 end

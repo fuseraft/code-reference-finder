@@ -13,12 +13,13 @@ gem install code_reference_finder
 require 'code_reference_finder'
 
 # Search a directory for .java files containing [abc, = abc.] and ignore imports.
-ref_finder = CodeReferenceFinder.new(
+ref_finder = CodeReferenceFinder.new
+refs = ref_finder.get_refs(
     dir: '/path/to/src/main/', 
     ext: '.java', 
     target: ['abc', '= abc.'],
     ignore: ['import com.', 'import org.']
 )
 
-puts ref_finder.get_json
+puts ref_finder.get_pretty_json
 ```
